@@ -1,0 +1,73 @@
+
+
+Vrinda Soni
+Vrindasoni39@gmail.com
+ 
+9106986927
+ 
+Ahmedabad
+ 
+linkedin.com/in/vrinda-soni-
+64388a242
+ 
+Projects
+Hospital Management System
+Developed a Hospital Management 
+System for patient registration, 
+appointment scheduling, billing, and 
+doctor scheduling using Java and 
+MySQL.
+Reseach Paper
+As part of my MSc in AI, I conducted 
+research titled "Intelligent Traffic 
+Signal Control using AI: A Machine 
+Learning Approach." The study 
+focused on optimizing traffic signals 
+using machine learning to reduce 
+congestion and improve flow. I 
+designed predictive models and 
+implemented AI-based adaptive 
+signal timing, demonstrating 
+significant reductions in traffic delays 
+during simulations.
+Certificates
+Python for Data Science
+Data Analysis with Python
+Data visualization with R
+R for Data Science
+Education
+Msc. in Artificial Intelligence, St. Xavier's College
+2024 – present
+Currently pursuing advanced coursework in machine learning, 
+deep learning, natural language processing, and computer vision. 
+Gained hands-on experience with AI frameworks such as 
+TensorFlow, PyTorch, and Scikit-learn. Focused on data analysis, 
+model optimization, and implementing state-of-the-art AI 
+algorithms.
+Bachelor of Computer Applications, 
+Lokmanya College of Computer Application
+2021 – 2024
+"I pursued a Bachelor's degree in Computer Applications, 
+achieving an overall 7.0 GPA. During my studies, I gained in-
+depth knowledge and practical skills in various aspects of 
+computer science and technology. I excelled in subjects such as 
+programming languages, data structures, software development, 
+and database management."
+Skills
+Team Collaboration
+Communication
+Programming Languages
+•Python
+•HTML/CSS
+•C/C++
+•SQL
+•Django
+Personal Skills
+•Communication
+•Creativity and Innovation
+•Soft Spoken
+•Time Management
+•Self-Management
+•Project-Solving
+•Adaptability
+•Critical Thinking

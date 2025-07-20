@@ -1,0 +1,40 @@
+{
+  "name": "hire-ai-backend",
+  "version": "1.0.0",
+  "description": "Backend for Hire.AI with LangChain and Gemini integration",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "node test-langchain.js",
+    "test:api": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "langchain",
+    "gemini",
+    "ai",
+    "backend"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "@langchain/core": "^0.3.66",
+    "@langchain/google-genai": "^0.2.15",
+    "cors": "^2.8.5",
+    "date-fns": "^3.3.1",
+    "dotenv": "^17.2.0",
+    "express": "^4.18.2",
+    "form-data": "^4.0.4",
+    "helmet": "^7.1.0",
+    "langchain": "^0.3.30",
+    "mongoose": "^8.16.4",
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^3.3.2",
+    "pdf-parse": "^1.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
