@@ -1,4 +1,5 @@
 import { langChainService } from './langchainService.js';
+import { candidateResumeService } from './candidateResumeService.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -12,6 +13,45 @@ class InterviewQuestionService {
       // Process the PDF content to extract user data and skills
       const userData = await this.processResumeData(pdfContent, skills);
       console.log("🚀 ~ InterviewQuestionService ~ generateQuestions ~ userData:", userData)
+      
+      // Check for duplicate candidate
+      const duplicateCheck = await candidateResumeService.checkDuplicateCandidate(
+        userData.personalInfo.email,
+        role,
+        skills
+      );
+      console.log("🚀 ~ InterviewQuestionService ~ generateQuestions ~ duplicateCheck:", duplicateCheck)
+      
+      let candidateData = null;
+      let isNewCandidate = false;
+      
+      // If candidate doesn't exist or was created more than a month ago, store the data
+      if (!duplicateCheck.exists || !duplicateCheck.isWithinMonth) {
+        // Prepare candidate data for storage
+        const candidateResumeData = {
+          personalInfo: userData.personalInfo,
+          professionalInfo: userData.professionalInfo,
+          professionalSummary: userData.professionalSummary,
+          workExperience: userData.workExperience,
+          technicalSkills: userData.technicalSkills,
+          softSkills: userData.softSkills,
+          roleApplied: {
+            role: role,
+            requestedSkills: skills
+          }
+        };
+        
+        // Store candidate data in database
+        const candidateResult = await candidateResumeService.createCandidateResume(candidateResumeData);
+        candidateData = candidateResult.data;
+        isNewCandidate = true;
+        
+        console.log("🚀 ~ InterviewQuestionService ~ generateQuestions ~ candidateData stored:", candidateData._id)
+      } else {
+        // Use existing candidate data
+        candidateData = duplicateCheck.candidate;
+        console.log("🚀 ~ InterviewQuestionService ~ generateQuestions ~ using existing candidate:", candidateData._id)
+      }
       
       // Create a comprehensive prompt for question generation
       const prompt = this.createQuestionGenerationPrompt({
@@ -59,7 +99,17 @@ class InterviewQuestionService {
    - Education (Degree, Institution, Year)
    - Certifications (if any)
 
-3. Technical Skills:
+3. Professional Summary:
+   - A concise summary of the candidate's professional background and strengths
+
+4. Work Experience:
+   - For each job, extract:
+     - Title
+     - Company
+     - Years (e.g. 2020-2024)
+     - Description (1-2 lines about responsibilities/achievements)
+
+5. Technical Skills:
    - Programming Languages
    - Frameworks & Libraries
    - Tools & Technologies
@@ -67,7 +117,7 @@ class InterviewQuestionService {
    - Cloud Platforms
    - Other Technical Skills
 
-4. Soft Skills:
+6. Soft Skills:
    - Leadership
    - Communication
    - Problem Solving
@@ -92,6 +142,15 @@ Please format your response as a JSON object with the following structure:
     "education": "string",
     "certifications": ["string"]
   },
+  "professionalSummary": "string",
+  "workExperience": [
+    {
+      "title": "string",
+      "company": "string",
+      "years": "string",
+      "description": "string"
+    }
+  ],
   "technicalSkills": ["string"],
   "softSkills": ["string"]
 }`;
@@ -104,9 +163,8 @@ Please format your response as a JSON object with the following structure:
 
       // Parse the response
       const userData = this.parseUserDataResponse(response);
-      
-      // Combine extracted skills with requested skills
-      const combinedSkills = [...new Set([...userData.technicalSkills, ...requestedSkills])];
+      // Restore combinedSkills logic as before
+      const combinedSkills = Array.from(new Set([...(userData.technicalSkills || []), ...(requestedSkills || [])]));
       
       return {
         ...userData,
@@ -133,9 +191,10 @@ Please format your response as a JSON object with the following structure:
           education: 'Unknown',
           certifications: []
         },
+        professionalSummary: '',
+        workExperience: [],
         technicalSkills: [],
         softSkills: [],
-        extractedSkills: [],
         requestedSkills,
         combinedSkills: requestedSkills,
         extractedAt: new Date().toISOString()
@@ -166,9 +225,10 @@ Please format your response as a JSON object with the following structure:
           education: 'Unknown',
           certifications: []
         },
+        professionalSummary: '',
+        workExperience: [],
         technicalSkills: [],
-        softSkills: [],
-        extractedSkills: []
+        softSkills: []
       };
     } catch (error) {
       console.error('Error parsing user data response:', error);
@@ -186,9 +246,10 @@ Please format your response as a JSON object with the following structure:
           education: 'Unknown',
           certifications: []
         },
+        professionalSummary: '',
+        workExperience: [],
         technicalSkills: [],
-        softSkills: [],
-        extractedSkills: []
+        softSkills: []
       };
     }
   }

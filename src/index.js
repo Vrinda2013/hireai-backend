@@ -8,6 +8,7 @@ import { connectDatabase } from './config/database.js';
 import { langchainRoutes } from './routes/langchain.js';
 import { interviewQuestionRoutes } from './routes/interviewQuestions.js';
 import { candidateRoleSkillRoutes } from './routes/candidateRoleSkills.js';
+import { candidateResumeRoutes } from './routes/candidateResumes.js';
 
 // Load environment variables
 dotenv.config();
@@ -33,6 +34,7 @@ app.use(express.json());
 app.use('/api/langchain', langchainRoutes);
 app.use('/api/interview-questions', interviewQuestionRoutes);
 app.use('/api/candidate-role-skills', candidateRoleSkillRoutes);
+app.use('/api/candidate-resumes', candidateResumeRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -51,4 +53,16 @@ app.listen(PORT, () => {
   console.log(`🔗 LangChain API: http://localhost:${PORT}/api/langchain`);
   console.log(`📝 Interview Questions API: http://localhost:${PORT}/api/interview-questions`);
   console.log(`👥 Candidate Role Skills API: http://localhost:${PORT}/api/candidate-role-skills`);
+  console.log(`📄 Candidate Resumes API: http://localhost:${PORT}/api/candidate-resumes`);
 }); 
+process.on('SIGTERM', () => {
+  server.close(() => {
+    console.log('Process terminated');
+  });
+});
+
+process.on('SIGINT', () => {
+  server.close(() => {
+    console.log('Process interrupted');
+  });
+});

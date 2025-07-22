@@ -80,7 +80,7 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
         questionComplexity: parseInt(questionComplexity),
         numberOfQuestions: parseInt(numberOfQuestions),
         customInstructions: customInstructions || null,
-        questions: result,
+        questions: result
       },
       timestamp: new Date().toISOString()
     });
