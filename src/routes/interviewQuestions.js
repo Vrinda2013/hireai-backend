@@ -35,7 +35,7 @@ const upload = multer({
 // Generate interview questions endpoint
 router.post('/generate', upload.single('pdf'), async (req, res) => {
   try {
-      let { role, skills, questionComplexity, numberOfQuestions } = req.body;
+      let { role, skills, questionComplexity, numberOfQuestions, customInstructions } = req.body;
       skills=JSON.parse(skills);
       console.log("🚀 ~ router.post ~ req.body:", req.body)
       
@@ -68,7 +68,8 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
       skills,
       questionComplexity: parseInt(questionComplexity),
       numberOfQuestions: parseInt(numberOfQuestions),
-      pdfPath: pdfFile.path
+      pdfPath: pdfFile.path,
+      customInstructions: customInstructions || null
     });
 
     res.json({
@@ -78,6 +79,7 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
         requestedSkills: skills,
         questionComplexity: parseInt(questionComplexity),
         numberOfQuestions: parseInt(numberOfQuestions),
+        customInstructions: customInstructions || null,
         questions: result,
       },
       timestamp: new Date().toISOString()

@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 class InterviewQuestionService {
-  async generateQuestions({ role, skills, questionComplexity, numberOfQuestions, pdfPath }) {
+  async generateQuestions({ role, skills, questionComplexity, numberOfQuestions, pdfPath, customInstructions }) {
     try {
       // Read and process the PDF file
       const pdfContent = await this.extractPdfContent(pdfPath);
@@ -19,7 +19,8 @@ class InterviewQuestionService {
         skills: userData.combinedSkills, // Use combined skills from resume + body
         questionComplexity,
         numberOfQuestions,
-        pdfContent
+        pdfContent,
+        customInstructions
       });
       console.log("🚀 ~ InterviewQuestionService ~ generateQuestions ~ prompt:", prompt)
 
@@ -238,10 +239,10 @@ Please format your response as a JSON object with the following structure:
     }
   }
 
-  createQuestionGenerationPrompt({ role, skills, questionComplexity, numberOfQuestions, pdfContent }) {
+  createQuestionGenerationPrompt({ role, skills, questionComplexity, numberOfQuestions, pdfContent, customInstructions }) {
     const complexityLevel = this.getComplexityLevel(questionComplexity);
     
-    return `You are an expert technical interviewer. Generate ${numberOfQuestions} interview questions for a ${role} position.
+    let prompt = `You are an expert technical interviewer. Generate ${numberOfQuestions} interview questions for a ${role} position.
 
 Requirements:
 - Role: ${role}
@@ -270,6 +271,16 @@ Format your response as a JSON array with the following structure:
 ]
 
 Generate exactly ${numberOfQuestions} questions.`;
+
+    // Add custom instructions at the end if provided
+    if (customInstructions && customInstructions.trim()) {
+      prompt += `\n\nIMPORTANT RULES TO FOLLOW:
+You must keep the following rules in mind and strictly follow them while generating the questions and answers:
+
+${customInstructions.trim()}`;
+    }
+
+    return prompt;
   }
 
   getComplexityLevel(complexity) {
