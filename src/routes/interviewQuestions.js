@@ -71,6 +71,17 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
       pdfPath: pdfFile.path,
       customInstructions: customInstructions || null
     });
+    console.log("🚀 ~ router.post ~ result:", result)
+
+    // Handle error response from service
+    if (result && result.error) {
+      return res.status(400).json({
+        success: false,
+        error: result.error,
+        reason: result.reason || null,
+        timestamp: new Date().toISOString()
+      });
+    }
 
     res.json({
       success: true,
