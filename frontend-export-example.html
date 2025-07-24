@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Questions Export Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .export-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        
+        .export-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        
+        .export-options {
+            margin-bottom: 20px;
+        }
+        
+        .export-options label {
+            font-weight: bold;
+            color: #34495e;
+            margin-right: 10px;
+        }
+        
+        .export-dropdown {
+            padding: 10px 15px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        
+        .export-dropdown:hover {
+            border-color: #3498db;
+        }
+        
+        .export-dropdown:focus {
+            outline: none;
+            border-color: #2980b9;
+            box-shadow: 0 0 5px rgba(41, 128, 185, 0.3);
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .export-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .pdf-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .pdf-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .csv-btn {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .csv-btn:hover {
+            background-color: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        #export-loading {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .sample-data {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .sample-data h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .sample-data pre {
+            background-color: #34495e;
+            color: #ecf0f1;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        
+        .status-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .status-success {
+            background-color: #d5edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .api-info {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+        }
+        
+        .api-info h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Interview Questions Export System</h1>
+        
+        <div class="api-info">
+            <h4>🔧 API Information</h4>
+            <p><strong>Server:</strong> http://localhost:3000</p>
+            <p><strong>PDF Export:</strong> POST /api/interview-questions/export/pdf</p>
+            <p><strong>CSV Export:</strong> POST /api/interview-questions/export/csv</p>
+        </div>
+        
+        <div class="export-section">
+            <h3>📥 Export Interview Questions</h3>
+            
+            <!-- Export Type Dropdown -->
+            <div class="export-options">
+                <label for="exportType">📋 Export Content:</label>
+                <select id="exportType" class="export-dropdown">
+                    <option value="questions-with-answers">📝 Questions with Answers (Complete)</option>
+                    <option value="questions-only">❓ Questions Only (No Answers)</option>
+                </select>
+            </div>
+            
+            <!-- Export Format Buttons -->
+            <div class="export-buttons">
+                <button onclick="handleExport('pdf')" class="export-btn pdf-btn">
+                    📄 Export as PDF
+                </button>
+                <button onclick="handleExport('csv')" class="export-btn csv-btn">
+                    📊 Export as CSV
+                </button>
+            </div>
+            
+            <!-- Loading indicator -->
+            <div id="export-loading" style="display: none;">
+                <span>🔄 Generating export file... Please wait...</span>
+            </div>
+            
+            <!-- Status messages -->
+            <div id="status-message"></div>
+        </div>
+        
+        <div class="sample-data">
+            <h4>📋 Sample Questions Data (For Testing)</h4>
+            <p>This is the sample data that will be exported when you click the buttons above:</p>
+            <pre id="sample-json"></pre>
+        </div>
+    </div>
+
+    <script>
+        // Sample questions data for demonstration
+        const sampleQuestionsData = {
+            questions: [
+                {
+                    question: "Explain the concept of React hooks and how they differ from class components.",
+                    type: "technical",
+                    complexity: "intermediate",
+                    expectedAnswer: "React hooks are functions that allow you to use state and other React features in functional components. They provide a more direct API to React concepts and eliminate the need for class components in most cases.",
+                    skills: ["React", "JavaScript"]
+                },
+                {
+                    question: "How do you handle state management in a large React application?",
+                    type: "technical", 
+                    complexity: "advanced",
+                    expectedAnswer: "For large applications, you can use Redux, Context API, Zustand, or other state management libraries. The choice depends on complexity, team size, and specific requirements.",
+                    skills: ["React", "State Management"]
+                },
+                {
+                    question: "Describe a challenging project you worked on and how you overcame obstacles.",
+                    type: "behavioral",
+                    complexity: "intermediate", 
+                    expectedAnswer: "Look for specific examples, problem-solving approach, collaboration skills, and lessons learned.",
+                    skills: ["Problem Solving", "Communication"]
+                }
+            ],
+            role: 'Frontend Developer',
+            candidateName: 'John Doe (Sample Candidate)',
+            requestedSkills: ['React', 'JavaScript', 'CSS', 'HTML'],
+            questionComplexity: 75,
+            numberOfQuestions: 3
+        };
+
+        // Display sample data
+        document.getElementById('sample-json').textContent = JSON.stringify(sampleQuestionsData, null, 2);
+
+        // Export function with dropdown support
+        async function exportQuestions(format, exportType, questionsData) {
+            try {
+                // Show loading state
+                const loadingElement = document.getElementById('export-loading');
+                const statusElement = document.getElementById('status-message');
+                
+                loadingElement.style.display = 'block';
+                statusElement.innerHTML = '';
+                
+                console.log(`🚀 Starting ${format.toUpperCase()} export with type: ${exportType}`);
+                
+                const response = await fetch(`http://localhost:3000/api/interview-questions/export/${format}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        questions: questionsData.questions,
+                        role: questionsData.role,
+                        candidateName: questionsData.candidateName || 'Unknown',
+                        metadata: {
+                            requestedSkills: questionsData.requestedSkills || [],
+                            questionComplexity: questionsData.questionComplexity,
+                            numberOfQuestions: questionsData.numberOfQuestions
+                        },
+                        exportType: exportType // 'questions-only' or 'questions-with-answers'
+                    })
+                });
+                
+                if (response.ok) {
+                    // Create download link
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    
+                    // Get filename from response headers or create one
+                    const contentDisposition = response.headers.get('content-disposition');
+                    let filename = `${exportType}-${questionsData.role}.${format}`;
+                    if (contentDisposition) {
+                        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                        if (filenameMatch) {
+                            filename = filenameMatch[1];
+                        }
+                    }
+                    
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    
+                    // Show success message
+                    statusElement.innerHTML = `<div class="status-message status-success">✅ Export successful! File downloaded: ${filename}</div>`;
+                    console.log('✅ Export completed successfully');
+                } else {
+                    const error = await response.json();
+                    console.error('❌ Export failed:', error);
+                    statusElement.innerHTML = `<div class="status-message status-error">❌ Export failed: ${error.error}</div>`;
+                }
+            } catch (error) {
+                console.error('❌ Export error:', error);
+                const statusElement = document.getElementById('status-message');
+                statusElement.innerHTML = `<div class="status-message status-error">❌ Export failed: ${error.message}</div>`;
+            } finally {
+                // Hide loading state
+                const loadingElement = document.getElementById('export-loading');
+                loadingElement.style.display = 'none';
+            }
+        }
+
+        // Handler function for export buttons
+        function handleExport(format) {
+            const exportType = document.getElementById('exportType').value;
+            
+            console.log(`📋 Export requested - Format: ${format}, Type: ${exportType}`);
+            
+            // Use sample data for demonstration
+            exportQuestions(format, exportType, sampleQuestionsData);
+        }
+
+        // Add some interactive feedback
+        document.getElementById('exportType').addEventListener('change', function() {
+            const selectedValue = this.value;
+            const description = selectedValue === 'questions-only' 
+                ? '📋 Will export questions without expected answers'
+                : '📋 Will export questions with expected answers included';
+            
+            console.log(`Dropdown changed to: ${selectedValue} - ${description}`);
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Interview Questions Export Demo loaded!');
+            console.log('📡 Make sure your backend server is running on http://localhost:3000');
+            console.log('📋 Sample data loaded and ready for export testing');
+        });
+    </script>
+</body>
+</html> 
