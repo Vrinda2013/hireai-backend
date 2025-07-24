@@ -28,7 +28,13 @@ const candidateResumeSchema = new mongoose.Schema({
   roleApplied: {
     role: { type: String, required: true, trim: true },
     requestedSkills: [{ type: String, trim: true }]
-  }
+  },
+  status: {
+    type: String,
+    enum: ['In Progress', 'On Hold', 'Accepted', 'Rejected'],
+    default: 'In Progress'
+  },
+  review: { type: String, trim: true }
 }, {
   timestamps: true
 });
