@@ -75,10 +75,13 @@ class CandidateResumeService {
   }
 
   // Get all candidates with pagination
-  async getAllCandidates(page = 1, limit = 10) {
+  async getAllCandidates(page = 1, limit = 10, status) {
     try {
       const skip = (page - 1) * limit;
       const query = {};
+      if (status) {
+        query.status = status;
+      }
 
       const candidates = await CandidateResume.find(query)
         .sort({ createdAt: -1 })

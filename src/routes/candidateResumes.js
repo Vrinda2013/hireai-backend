@@ -6,11 +6,12 @@ const router = express.Router();
 // Get all candidates with pagination
 router.get('/', async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 10, status } = req.query;
     
     const result = await candidateResumeService.getAllCandidates(
       parseInt(page),
-      parseInt(limit)
+      parseInt(limit),
+      status
     );
 
     res.json(result);
