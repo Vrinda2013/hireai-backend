@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { interviewQuestionService } from '../services/interviewQuestionService.js';
+import PDFDocument from 'pdfkit';
 
 const router = express.Router();
 
@@ -102,6 +103,51 @@ router.post('/generate', upload.single('pdf'), async (req, res) => {
       error: error.message || 'Failed to generate interview questions',
       timestamp: new Date().toISOString()
     });
+  }
+});
+
+// Download interview questions (and answers) as PDF
+router.post('/download-pdf', async (req, res) => {
+  try {
+    const { role, requestedSkills, questionComplexity, numberOfQuestions, customInstructions, questions } = req.body;
+    const withAnswers = req.query.withAnswers === 'true';
+
+    // Set response headers for PDF download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=interview-${role || 'questions'}.pdf`);
+
+    const doc = new PDFDocument({ margin: 40, size: 'A4' });
+    doc.pipe(res);
+
+    // Title
+    doc.fontSize(20).text(`Interview Questions for ${role || ''}`, { align: 'center' });
+    doc.moveDown();
+
+    // Meta info
+    if (requestedSkills) doc.fontSize(12).text(`Skills: ${requestedSkills.join(', ')}`);
+    if (questionComplexity) doc.text(`Complexity: ${questionComplexity}`);
+    if (numberOfQuestions) doc.text(`Number of Questions: ${numberOfQuestions}`);
+    if (customInstructions) doc.text(`Custom Instructions: ${customInstructions}`);
+    doc.moveDown();
+
+    // Questions
+    (questions || []).forEach((q, idx) => {
+      doc.fontSize(14).fillColor('black').text(`Q${idx + 1}: ${q.question}`, { underline: true });
+      doc.fontSize(11).fillColor('gray').text(`Type: ${q.type} | Complexity: ${q.complexity} | Skills: ${(q.skills || []).join(', ')}`);
+      doc.moveDown(0.5);
+      if (withAnswers) {
+        doc.fontSize(12).fillColor('green').text(`Expected Answer:`, { continued: true }).fillColor('black').text(` ${q.expectedAnswer}`);
+        doc.moveDown();
+      } else {
+        doc.moveDown(1.5);
+      }
+      doc.moveDown();
+    });
+
+    doc.end();
+  } catch (error) {
+    console.error('PDF generation error:', error);
+    res.status(500).json({ error: 'Failed to generate PDF' });
   }
 });
 
