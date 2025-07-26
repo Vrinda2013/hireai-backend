@@ -42,7 +42,7 @@ class InterviewQuestionService {
         };
         
         // Store candidate data in database
-        const candidateResult = await candidateResumeService.createCandidateResume(candidateResumeData);
+        const candidateResult = await candidateResumeService.createCandidate(candidateResumeData);
         candidateData = candidateResult.data;
         isNewCandidate = true;
         

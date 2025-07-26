@@ -23,19 +23,85 @@ class CandidateResumeService {
     }
   }
 
-  // Create a new candidate resume entry
-  async createCandidateResume(candidateData) {
+  // Get default review criteria
+  getDefaultReviewCriteria() {
+    return [
+      {
+        title: "Technical Knowledge",
+        description: "Accounting principles, GST, Software",
+        rating: 0,
+        feedback: "",
+        isDefault: true,
+        createdAt: new Date()
+      },
+      {
+        title: "Excel Proficiency", 
+        description: "VLOOKUP, Pivot Tables, basic formulas",
+        rating: 0,
+        feedback: "",
+        isDefault: true,
+        createdAt: new Date()
+      },
+      {
+        title: "Communication Clarity",
+        description: "Explains concepts well", 
+        rating: 0,
+        feedback: "",
+        isDefault: true,
+        createdAt: new Date()
+      },
+      {
+        title: "Professional Attitude",
+        description: "Punctuality, politeness, interest",
+        rating: 0,
+        feedback: "",
+        isDefault: true,
+        createdAt: new Date()
+      },
+      {
+        title: "Problem-Solving Ability",
+        description: "Handles real scenarios effectively",
+        rating: 0,
+        feedback: "",
+        isDefault: true,
+        createdAt: new Date()
+      },
+      {
+        title: "Cultural Fit",
+        description: "Teamwork, accountability, learning mindset",
+        rating: 0,
+        feedback: "",
+        isDefault: true,
+        createdAt: new Date()
+      }
+    ];
+  }
+
+  // Create a new candidate
+  async createCandidate(candidateData) {
     try {
-      const candidateResume = new CandidateResume(candidateData);
-      const savedCandidate = await candidateResume.save();
+      // Add default review criteria for new candidates
+      const defaultCriteria = this.getDefaultReviewCriteria();
+      const candidate = new CandidateResume({
+        ...candidateData,
+        review: {
+          overallRating: 0,
+          progress: {
+            totalCriteria: defaultCriteria.length,
+            completedCriteria: 0,
+            percentage: 0
+          },
+          criteria: defaultCriteria
+        }
+      });
       
+      const savedCandidate = await candidate.save();
       return {
         success: true,
         data: savedCandidate,
-        message: 'Candidate resume data stored successfully'
+        message: 'Candidate created successfully'
       };
     } catch (error) {
-      console.error('Error creating candidate resume:', error);
       throw error;
     }
   }

@@ -34,7 +34,22 @@ const candidateResumeSchema = new mongoose.Schema({
     enum: ['In Progress', 'On Hold', 'Accepted', 'Rejected'],
     default: 'In Progress'
   },
-  review: { type: String, trim: true }
+  review: {
+    overallRating: { type: Number, min: 0, max: 5, default: 0 },
+    progress: {
+      totalCriteria: { type: Number, default: 6 },
+      completedCriteria: { type: Number, default: 0 },
+      percentage: { type: Number, default: 0 }
+    },
+    criteria: [{
+      title: { type: String, required: true, trim: true },
+      description: { type: String, trim: true },
+      rating: { type: Number, min: 0, max: 5, default: 0 },
+      feedback: { type: String, trim: true, default: "" },
+      isDefault: { type: Boolean, default: true },
+      createdAt: { type: Date, default: Date.now }
+    }]
+  }
 }, {
   timestamps: true
 });
