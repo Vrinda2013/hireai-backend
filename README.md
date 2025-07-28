@@ -216,6 +216,7 @@ Set `LOG_LEVEL` in your `.env` file to control logging verbosity.
 3. Use a process manager like PM2:
    ```bash
    npm install -g pm2
+   
    pm2 start src/index.js --name "hire-ai-backend"
    ```
 
